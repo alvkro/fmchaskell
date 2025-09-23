@@ -34,11 +34,13 @@ infixl 6 +
 
 -- Output: O means False, S O means True
 isZero :: Nat -> Nat
-isZero = undefined
+isZero O = S O -- Caso 1: Se meu imput for O
+isZero x = O -- Caso 2: Se meu imput for qualquer outra coisa
 
 -- pred is the predecessor but we define zero's to be zero
 pred :: Nat -> Nat
-pred = undefined
+pred O = O
+pred (S n) = n
 
 -- Output: O means False, S O means True
 even :: Nat -> Nat
