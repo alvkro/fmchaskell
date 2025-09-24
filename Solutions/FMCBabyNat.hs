@@ -79,12 +79,26 @@ infixl 7 *
 infixr 8 ^
 
 -- quotient
+(>=) :: Nat -> Nat -> Nat
+(>=) O O = S O
+(>=) x O = S O
+(>=) O x = O
+(>=) (S x) (S y) = (>=) x y
+
 (/) :: Nat -> Nat -> Nat
-(/) = undefined
+(/) x O = undefined
+(/) x y = 
+    if (>=) x y == O 
+    then O 
+    else S ((monus x y) / y)
 
 -- remainder
 (%) :: Nat -> Nat -> Nat
-(%) = undefined
+(%) x O = undefined
+(%) x y = 
+    if (>=) x y == O 
+    then x 
+    else (monus x y) % y
 
 -- divides
 -- just for a change, we start by defining the "symbolic" operator
