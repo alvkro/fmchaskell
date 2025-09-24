@@ -43,33 +43,40 @@ pred O = O
 pred (S n) = n
 
 -- Output: O means False, S O means True
-even :: Nat -> Nat
-even = undefined
+even :: Nat -> Nat -- Par
+even O = S O
+even (S n) = odd n
 
-odd :: Nat -> Nat
-odd = undefined
+odd :: Nat -> Nat -- Impar
+odd O = O
+odd (S n) = even n
 
 -- This is called the dotminus or monus operator
 -- (also: proper subtraction, arithmetic subtraction, ...).
 -- It behaves like subtraction, except that it returns 0
 -- when "normal" subtraction would return a negative number.
 monus :: Nat -> Nat -> Nat
-monus = undefined
+monus x O = x
+monus O y = O
+monus (S x) (S y) = monus x y
 
 (-*) :: Nat -> Nat -> Nat
 (-*) = monus
 
 -- multiplication
 (*) :: Nat -> Nat -> Nat
-(*) = undefined
-
+(*) x  O = O
+(*) x (S y) = x * y + x -- é como se pegasse o 3 e fosse decompondo em vários x (nesse caso 2) até que chegasse ao caso O, resultando em 6"
+--               ^^^
+--         SHADOWING DA VARIAVEL Y PARA Y - 1 ATÉ O CASO BASE
 infixl 7 *
 
 -- exponentiation
 (^) :: Nat -> Nat -> Nat
-(^) = undefined
+(^) x O = one
+(^) x (S y) = x ^ y * x
 
--- decide: infix? ? ^
+infixr 8 ^
 
 -- quotient
 (/) :: Nat -> Nat -> Nat
