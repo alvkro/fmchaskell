@@ -117,12 +117,14 @@ infixl 7 /
 -- again, outputs: O means False, S O means True
 (|||) :: Nat -> Nat -> Nat
 (|||) x y = 
-
+    if y % x == O 
+    then S O
+    else O  
 
 -- x `absDiff` y = |x - y|
 -- (Careful here: this - is the actual minus operator we know from the integers!)
 absDiff :: Nat -> Nat -> Nat
-absDiff = undefined
+absDiff x y = x |-| y -- Mesma coisa que o |-|
 
 (|-|) :: Nat -> Nat -> Nat
 (|-|) x y = 
