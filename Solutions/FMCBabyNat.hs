@@ -78,6 +78,21 @@ infixl 7 *
 
 infixr 8 ^
 
+-- greater than or equal
+(>=) :: Nat -> Nat -> Nat
+(>=) O O = S O
+(>=) O (S _) = O
+(>=) (S _) O = S O  
+(>=) (S n) (S m) = (>=) n m
+
+-- less than or equal
+(<=) :: Nat -> Nat -> Nat
+(<=) O _ = one
+(<=) _ O = zero
+(<=) (S n) (S m) = (<=) n m
+
+-- PS: Todos essas definições acima eu tive que tirar do Zullip (caso alguma hora eu precise...)
+
 -- quotient
 (/) :: Nat -> Nat -> Nat
 (/) x O = undefined
@@ -101,7 +116,8 @@ infixl 7 /
 -- and then define `devides` as a synonym to it
 -- again, outputs: O means False, S O means True
 (|||) :: Nat -> Nat -> Nat
-(|||) = undefined
+(|||) x y = 
+
 
 -- x `absDiff` y = |x - y|
 -- (Careful here: this - is the actual minus operator we know from the integers!)
@@ -109,7 +125,12 @@ absDiff :: Nat -> Nat -> Nat
 absDiff = undefined
 
 (|-|) :: Nat -> Nat -> Nat
-(|-|) = absDiff
+(|-|) x y = 
+    if x == y 
+    then O 
+    else if (>=) x y == S O 
+         then monus x y 
+         else monus y x
 
 factorial :: Nat -> Nat
 factorial O = S O
@@ -117,9 +138,16 @@ factorial (S x) = factorial x * S x
 
 -- signum of a number (-1, 0, or 1)
 sg :: Nat -> Nat
-sg = undefined
+sg O = O
+sg x = S O
 
 -- lo b a is the floor of the logarithm base b of a
 lo :: Nat -> Nat -> Nat
-lo = undefined
-
+lo O a = undefined
+lo (S O) a = undefined  
+lo b O = undefined
+lo b a = 
+    if (>=) a b == O 
+    then O 
+    else S (lo b (a / b))
+-- A minha utilização de X e Y fica horrível nesse teorema T_T
