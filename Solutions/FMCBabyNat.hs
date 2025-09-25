@@ -79,26 +79,22 @@ infixl 7 *
 infixr 8 ^
 
 -- quotient
-(>=) :: Nat -> Nat -> Nat
-(>=) O O = S O
-(>=) x O = S O
-(>=) O x = O
-(>=) (S x) (S y) = (>=) x y
-
 (/) :: Nat -> Nat -> Nat
 (/) x O = undefined
-(/) x y = 
-    if (>=) x y == O 
-    then O 
-    else S ((monus x y) / y)
+(/) x y = -- Tentativa de fazer com Pattern Matching
+    if monus x y == x -- a estrutura if-then-else assemelha ao operador ternário
+    then if x == y then one else O
+    else S (monus x y) / y
+
+infixl 7 /
 
 -- remainder
 (%) :: Nat -> Nat -> Nat
 (%) x O = undefined
 (%) x y = 
-    if (>=) x y == O 
+    if monus x y == y
     then x 
-    else (monus x y) % y
+    else monus x y % y
 
 -- divides
 -- just for a change, we start by defining the "symbolic" operator
@@ -116,7 +112,8 @@ absDiff = undefined
 (|-|) = absDiff
 
 factorial :: Nat -> Nat
-factorial = undefined
+factorial O = S O
+factorial (S x) = factorial x * S x
 
 -- signum of a number (-1, 0, or 1)
 sg :: Nat -> Nat
