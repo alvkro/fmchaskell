@@ -35,7 +35,7 @@ infixl 6 +
 -- Output: O means False, S O means True
 isZero :: Nat -> Nat
 isZero O = S O -- Caso 1: Se meu imput for O
-isZero x = O -- Caso 2: Se meu imput for qualquer outra coisa
+isZero m = O -- Caso 2: Se meu imput for qualquer outra coisa
 
 -- pred is the predecessor but we define zero's to be zero
 pred :: Nat -> Nat
@@ -56,25 +56,25 @@ odd (S n) = even n
 -- It behaves like subtraction, except that it returns 0
 -- when "normal" subtraction would return a negative number.
 monus :: Nat -> Nat -> Nat
-monus x O = x
-monus O y = O
-monus (S x) (S y) = monus x y
+monus m O = m
+monus O n = O
+monus (S m) (S n) = monus m n
 
 (-*) :: Nat -> Nat -> Nat
 (-*) = monus
 
 -- multiplication
 (*) :: Nat -> Nat -> Nat
-(*) x  O = O
-(*) x (S y) = x * y + x -- é como se pegasse o 3 e fosse decompondo em vários x (nesse caso 2) até que chegasse ao caso O, resultando em 6"
+(*) m  O = O
+(*) m (S n) = m * n + m -- é como se pegasse o 3 e fosse decompondo em vários x (nesse caso 2) até que chegasse ao caso O, resultando em 6"
 --               ^^^
 --         SHADOWING DA VARIAVEL Y PARA Y - 1 ATÉ O CASO BASE
 infixl 7 *
 
 -- exponentiation
 (^) :: Nat -> Nat -> Nat
-(^) x O = one
-(^) x (S y) = x ^ y * x
+(^) m O = one
+(^) m (S n) = m ^ n * m
 
 infixr 8 ^
 
@@ -95,53 +95,50 @@ infixr 8 ^
 
 -- quotient
 (/) :: Nat -> Nat -> Nat
-(/) x O = undefined
-(/) x y = -- Tentativa de fazer com Pattern Matching
-    if monus x y == x -- a estrutura if-then-else assemelha ao operador ternário
-    then if x == y then one else O
-    else S (monus x y) / y
+(/) m O = undefined
+(/) m n =
+    case monus m n of -- Estrutura Switch-case (C++)
+        O -> if m == n then one else O
+        diff -> S (diff / n) -- diff seria semelhante ao caso "default" de um switch case
 
 infixl 7 /
 
 -- remainder
 (%) :: Nat -> Nat -> Nat
-(%) x O = undefined
-(%) x y = 
-    if monus x y == y
-    then x 
-    else monus x y % y
+(%) m O = undefined
+(%) m n = 
+    case monus m n of   
+        O -> if m == n then O else m  
+        diff -> diff % n              
 
 -- divides
 -- just for a change, we start by defining the "symbolic" operator
 -- and then define `devides` as a synonym to it
 -- again, outputs: O means False, S O means True
 (|||) :: Nat -> Nat -> Nat
-(|||) x y = 
-    if y % x == O 
-    then S O
-    else O  
+(|||) m n = if m % n == O then S O else O 
 
 -- x `absDiff` y = |x - y|
 -- (Careful here: this - is the actual minus operator we know from the integers!)
 absDiff :: Nat -> Nat -> Nat
-absDiff x y = x |-| y -- Mesma coisa que o |-|
+absDiff m n = m |-| n -- Mesma coisa que o |-|
 
 (|-|) :: Nat -> Nat -> Nat
-(|-|) x y = 
-    if x == y 
+(|-|) m n = 
+    if m == n 
     then O 
-    else if (>=) x y == S O 
-         then monus x y 
-         else monus y x
+    else if (>=) m n == S O 
+         then monus m n
+         else monus n m
 
 factorial :: Nat -> Nat
 factorial O = S O
-factorial (S x) = factorial x * S x
+factorial (S m) = factorial m * S m
 
 -- signum of a number (-1, 0, or 1)
 sg :: Nat -> Nat
 sg O = O
-sg x = S O
+sg m = S O
 
 -- lo b a is the floor of the logarithm base b of a
 lo :: Nat -> Nat -> Nat
@@ -153,3 +150,10 @@ lo b a =
     then O 
     else S (lo b (a / b))
 -- A minha utilização de X e Y fica horrível nesse teorema T_T
+
+-- Isso TUDO é pattern matching:
+-- f 0 = ...            Padrão de valor
+-- f (S n) = ...        Padrão de construtor  
+-- f (x:xs) = ...       Padrão de lista
+-- f (a, b) = ...       Padrão de tupla
+-- f _ = ...            Padrão coringa
