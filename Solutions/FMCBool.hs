@@ -15,7 +15,7 @@ import Prelude
     , (.)
     , undefined
     , error
-    , otherwise
+    , otherwise, tail
     )
 
 -- Define evenerything that is undefined,
@@ -33,12 +33,12 @@ instance Show Bool where
 instance Enum Bool where
 
     toEnum :: Int -> Bool
-    toEnum S O = True
-    toEnum O = False
+    toEnum 1 = True
+    toEnum 0 = False
 
     fromEnum :: Bool -> Int
-    fromEnum True = S O
-    fromEnum False = O
+    fromEnum True = 1
+    fromEnum False = 0
 
 -- conjunction (AND)
 (&&) :: Bool -> Bool -> Bool
@@ -64,13 +64,16 @@ infixr 2 /|\
 
 -- NOR (aka: Peirce arrow or Quine dagger)
 (\|/) :: Bool -> Bool -> Bool
-(\|/) = undefined
+(\|/) False False = True
+(\|/) _ _ = False
 
 infixr 2 \|/
 
 -- XOR (exclusive disjunction)
 (<=/=>) :: Bool -> Bool -> Bool
-(<=/=>) = undefined
+(<=/=>) True True = False
+(<=/=>) False False = False
+(<=/=>) _ _ = True
 
 infixr 2 <=/=>
 
@@ -81,23 +84,28 @@ not False = True
 
 -- if-then-else expression
 ifThenElse :: Bool -> a -> a -> a
-ifThenElse S O = 
+ifThenElse True t f = t
+ifThenElse False t f = f
 
 -- logical "implies"
 (==>) :: Bool -> Bool -> Bool
-(==>) = undefined
+(==>) False _ = True
+(==>) True x = x
 
 infixr 1 ==>
 
 -- logical "implied by"
 (<==) :: Bool -> Bool -> Bool
-(<==) = undefined
+(<==) False _ = True
+(<==) True x = x
 
 infixl 1 <==
 
 -- logical equivalence
 (<=>) :: Bool -> Bool -> Bool
-(<=>) = undefined
+(<=>) True True = True
+(<=>) False False = True
+(<=>) _ _ = False
 
 infixr 1 <=>
 
