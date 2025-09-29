@@ -12,6 +12,7 @@ import Prelude
     , Bool(..) , not , (&&) , (||)
     , ($)
     , (.)
+    , (++)
     , undefined
     , error
     , otherwise
@@ -51,6 +52,21 @@ instance Ord Nat where
 
     max = undefined
 
+
+----------------------------------------------------------------
+-- some sugar
+----------------------------------------------------------------
+
+zero, one, two, three, four, five, six, seven, eight :: Nat
+zero  = O
+one   = S zero
+two   = S one
+three = S two
+four  = S three
+five  = S four
+six   = S five
+seven = S six
+eight = S seven
 
 ----------------------------------------------------------------
 -- internalized predicates
