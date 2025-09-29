@@ -10,6 +10,7 @@ import Prelude
     , Integral(..)
     , Int
     , Char
+    , String
     , (++)
     , ($)
     , (.)
