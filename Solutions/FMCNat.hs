@@ -8,6 +8,7 @@ import Prelude
     , Eq(..)
     , Ord(..)
     , Num(..)
+    , String(..)
     , Integral(..)
     , Bool(..) , not , (&&) , (||)
     , ($)
@@ -34,21 +35,32 @@ instance Show Nat where
 
     -- zero  should be shown as O
     -- three should be shown as SSSO
-    show = undefined
+    show :: Nat -> String
+    show O = "O"
+    show (S n) = "S" ++ show n
 
 instance Eq Nat where
 
-    (==) = undefined
+    (==) :: Nat -> Nat -> Bool
+    (==) O O = True -- primeiro caso
+    (==) (S x) (S y) = x == y -- faz a captura recursiva
+    (==) _ _ = False -- ultimo dos casos
+
 
 instance Ord Nat where
 
-    (<=) = undefined
+    (<=) :: Nat -> Nat -> Bool
+    (<=) (S _) O = False
+    (<=) O _ = True
+    (<=) (S x) (S y) = x <= y
 
     -- Ord does not REQUIRE defining min and max.
     -- Howevener, you should define them WITHOUT using (<=).
     -- Both are binary functions: max m n = ..., etc.
 
-    min = undefined
+    min :: Nat -> Nat -> Nat
+    min x _ = x
+    min y _ = y
 
     max = undefined
 
@@ -73,17 +85,21 @@ eight = S seven
 ----------------------------------------------------------------
 
 isZero :: Nat -> Bool
-isZero = undefined
+isZero O = False
+isZero (S O) = True
 
 -- pred is the predecessor but we define zero's to be zero
 pred :: Nat -> Nat
-pred = undefined
+pred O = O
+pred (S n) = n
 
 even :: Nat -> Bool
-even = undefined
+even O = True
+even (S n) = odd n
 
 odd :: Nat -> Bool
-odd = undefined
+odd O = False
+odd (S n) = even n
 
 
 ----------------------------------------------------------------
@@ -92,21 +108,28 @@ odd = undefined
 
 -- addition
 (<+>) :: Nat -> Nat -> Nat
-(<+>) = undefined
+(<+>) x O = x
+(<+>) (S x) y = S (x <+> y)
 
 -- This is called the dotminus or monus operator
 -- (also: proper subtraction, arithmetic subtraction, ...).
 -- It behaves like subtraction, except that it returns 0
 -- when "normal" subtraction would return a negative number.
 monus :: Nat -> Nat -> Nat
-monus = undefined
+monus m O = m
+monus (S m) (S n) = m `monus` n
+monus _ _ = O
 
 (-*) :: Nat -> Nat -> Nat
-(-*) = undefined
+(-*) O O = O
+(-*) _ O = O
+(-*) O _ = O
 
 -- multiplication
 times :: Nat -> Nat -> Nat
-times = undefined
+times O O = O
+times _ O = O
+times m (S n) = m * n <+> m
 
 (<*>) :: Nat -> Nat -> Nat
 (<*>) = times
@@ -153,11 +176,18 @@ factorial = undefined
 
 -- signum of a number (-1, 0, or 1)
 sg :: Nat -> Nat
-sg = undefined
+sg O = O
+sg m = S O
 
 -- lo b a is the floor of the logarithm base b of a
 lo :: Nat -> Nat -> Nat
-lo = undefined
+lo O a = undefined
+lo (S O) a = undefined  
+lo b O = undefined
+lo b a = 
+    if (>=) a b == O 
+    then O 
+    else S (lo b (a / b))
 
 
 ----------------------------------------------------------------
