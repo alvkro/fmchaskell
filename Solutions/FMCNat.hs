@@ -165,13 +165,17 @@ exp = pow
 
 -- euclidean division
 eucdiv :: (Nat, Nat) -> (Nat, Nat)
-eucdiv = undefined
+eucdiv (m, n) =
+    if m >= n
+    then let (q, r) = eucdiv (m - n, n)
+         in (S q, r) -- +1 no quociente
+    else (O, m)  
 
 -- divides
 (<|>) :: Nat -> Nat -> Bool
-(<|>) m n = if m <%> n == O -- é redundante colocar then/else
+(<|>) m n = if m % n == O -- é redundante colocar then/else
 
-divides :: Nat -> Nat -> Bool
+divides :: Nat -> Nat -> Bool -- ???
 divides = (<|>)
 
 
@@ -214,10 +218,13 @@ lo b a =
 -- Do NOT use the following functions in the definitions above!
 
 toNat :: Integral a => a -> Nat
-toNat = undefined
+toNat n
+    | n == 0    = O
+    | otherwise = S (toNat (n - 1))
 
 fromNat :: Integral a => Nat -> a
-fromNat = undefined
+fromNat O = 0
+fromNat (S n) = 1 + fromNat n
 
 
 -- Voilá: we can now easily make Nat an instance of Num.
@@ -229,7 +236,7 @@ instance Num Nat where
     abs n = n
     signum = sg
     fromInteger x
-      | x < 0     = undefined
-      | x == 0    = undefined
-      | otherwise = undefined
+      | x < 0     = error "Não existe número natural negativo"
+      | x == 0    = O
+      | otherwise = S (fromInteger (x - 1))
 
