@@ -1,4 +1,6 @@
 {-# LANGUAGE GADTs #-}
+{-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
+{-# HLINT ignore "Redundant if" #-}
 
 module ExNat where
 
@@ -173,7 +175,7 @@ eucdiv (m, n) =
 
 -- divides
 (<|>) :: Nat -> Nat -> Bool
-(<|>) m n = if m % n == O -- é redundante colocar then/else
+(<|>) m n = if m <%> n == O then True else False -- é redundante colocar then/else, massss tava dando parsing error :p
 
 divides :: Nat -> Nat -> Bool -- ???
 divides = (<|>)
@@ -205,9 +207,9 @@ lo O a = undefined
 lo (S O) a = undefined  
 lo b O = undefined
 lo b a = 
-    if (>=) a b == O 
+    if (>=) a b 
     then O 
-    else S (lo b (a / b))
+    else S (lo b (a </> b))
 
 
 ----------------------------------------------------------------
@@ -232,7 +234,7 @@ instance Num Nat where
 
     (+) = (<+>)
     (*) = (<*>)
-    (-) = (<->)
+    (-) = monus
     abs n = n
     signum = sg
     fromInteger x
