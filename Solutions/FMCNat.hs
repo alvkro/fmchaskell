@@ -59,10 +59,14 @@ instance Ord Nat where
     -- Both are binary functions: max m n = ..., etc.
 
     min :: Nat -> Nat -> Nat
-    min x _ = x
-    min y _ = y
+    min y O = y
+    min O x = x
+    min (S x) (S y) = S (x `min` y)
 
-    max = undefined
+    max :: Nat -> Nat -> Nat
+    max O x = x
+    max y O = y
+    max (S x) (S y) = S (x `max` y)
 
 
 ----------------------------------------------------------------
@@ -121,36 +125,43 @@ monus (S m) (S n) = m `monus` n
 monus _ _ = O
 
 (-*) :: Nat -> Nat -> Nat
-(-*) O O = O
-(-*) _ O = O
-(-*) O _ = O
+(-*) = monus
 
 -- multiplication
 times :: Nat -> Nat -> Nat
 times O O = O
 times _ O = O
-times m (S n) = m * n <+> m
+times m (S n) = m `times` n <+> m
 
 (<*>) :: Nat -> Nat -> Nat
 (<*>) = times
 
 -- power / exponentiation
 pow :: Nat -> Nat -> Nat
-pow = undefined
+pow m O = one
+pow m (S n) = m `pow` n `times` m
 
 exp :: Nat -> Nat -> Nat
-exp = undefined
+exp = pow
 
 (<^>) :: Nat -> Nat -> Nat
-(<^>) = undefined
+(<^>) = exp
 
--- quotient
+-- quotient (quantas vezes x cabe em y?)
 (</>) :: Nat -> Nat -> Nat
-(</>) = undefined
+(</>) m O = undefined
+(</>) m n =
+    case monus m n of -- Estrutura Switch-case (C++)
+        O -> if m == n then one else O
+        diff -> S (diff </> n) -- diff seria semelhante ao caso "default" de um switch case
 
 -- remainder
 (<%>) :: Nat -> Nat -> Nat
-(<%>) = undefined
+(<%>) m O = undefined
+(<%>) m n = 
+    case monus m n of   
+        O -> if m == n then O else m  
+        diff -> diff <%> n  
 
 -- euclidean division
 eucdiv :: (Nat, Nat) -> (Nat, Nat)
@@ -158,8 +169,9 @@ eucdiv = undefined
 
 -- divides
 (<|>) :: Nat -> Nat -> Bool
-(<|>) = undefined
+(<|>) m n = if m <%> n == O -- é redundante colocar then/else
 
+divides :: Nat -> Nat -> Bool
 divides = (<|>)
 
 
@@ -167,12 +179,16 @@ divides = (<|>)
 -- x `dist` y = |x - y|
 -- (Careful here: this - is the real minus operator!)
 dist :: Nat -> Nat -> Nat
-dist = undefined
+dist m O = m
+dist O n = n
+dist (S m) (S n) = m `dist` n
 
+(|-|) :: Nat -> Nat -> Nat
 (|-|) = dist
 
 factorial :: Nat -> Nat
-factorial = undefined
+factorial O = S O
+factorial (S m) = factorial m * S m
 
 -- signum of a number (-1, 0, or 1)
 sg :: Nat -> Nat
