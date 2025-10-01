@@ -13,6 +13,8 @@ import Prelude
 import qualified Prelude   as P
 import qualified Data.List as L
 import qualified Data.Char as C
+import FMCBabyNat (Nat(O))
+import Data.Binary.Builder (empty)
 
 {- import qualified ... as ... ?
 
@@ -58,28 +60,37 @@ write [u,v]     for our u `Cons` (v `Cons` Nil)
 -}
 
 head :: [a] -> a
-head = undefined
+head [] = error "lista vazia!"
+head (x:xs) = x -- Leia-se: pattern-maching em (x:xs) = x :)
 
 tail :: [a] -> [a]
-tail = undefined
+tail [] = error "lista vazia!"
+tail (x:xs) = xs 
 
 null :: [a] -> Bool
-null = undefined
+null [] = True
+null (_:_) = False
 
 length :: Integral i => [a] -> i
-length = undefined
+length [] = 0
+length (x:xs) = 1 + length xs
+
 
 sum :: Num a => [a] -> a
-sum = undefined
+sum [] = 0
+sum (x:xs) = x + sum xs
 
 product :: Num a => [a] -> a
-product = undefined
+product [] = 1 -- Tem que ser 1 porque se fosse zero ia zerar tudo (se lembre de factorial!)
+product (x:xs) = x * product xs
 
 reverse :: [a] -> [a]
-reverse = undefined
+reverse [] = []
+reverse (x:xs) = xs ++ [x]
 
 (++) :: [a] -> [a] -> [a]
-(++) = undefined
+(++) [] ys = ys
+(++) (x:xs) ys = x : (xs ++ ys)
 
 -- right-associative for performance!
 -- (what?!)
