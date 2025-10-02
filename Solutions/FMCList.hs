@@ -13,7 +13,6 @@ import Prelude
 import qualified Prelude   as P
 import qualified Data.List as L
 import qualified Data.Char as C
-import FMCBabyNat (Nat(O), one)
 import Data.Binary.Builder (empty)
 
 {- import qualified ... as ... ?
@@ -162,7 +161,9 @@ inits :: [a] -> [[a]]
 inits [] = [[]]
 inits (x:xs) = [] : [x:ys | ys <- inits xs]
 
--- subsequences (para fazer c/ map)
+subsequences :: [a] -> [[a]]
+subsequences [] = [[]]
+subsequences (x:xs) = subsequences xs ++ map (x:) (subsequences xs)
 
 any :: (a -> Bool) -> [a] -> Bool
 any _ [] = False
@@ -191,10 +192,20 @@ concat (xs:xss) = xs ++ concat xss
 
 -- (!!)
 
--- filter
--- map
+filter :: (a -> Bool) -> [a] -> [a]
+filter _ [] = []
+filter p (x:xs)
+    | p x       = x : filter p xs       -- se for true, x será incluido
+    | otherwise = filter p xs  
 
--- cycle
+map :: (a -> b) -> [a] -> [b]
+map _ [] = []                       
+map f (x:xs) = f x : map f xs -- Aplica uma function em x e retorna a lista pós função
+
+cycle :: [a] -> [a]
+cycle [] = error "Lista vazia!"
+cycle xs = xs' where xs' = xs ++ xs'
+
 repeat :: a -> [a]
 repeat x = x : repeat x
 
@@ -202,9 +213,16 @@ replicate :: Int -> a -> [a]
 replicate 0 _ = []
 replicate n x = x : replicate (n-1) x
 
--- isPrefixOf
--- isInfixOf
--- isSuffixOf
+isPrefixOf :: Eq a => [a] -> [a] -> Bool
+isPrefixOf [] _ = True                    
+isPrefixOf _ [] = False                   
+isPrefixOf (x:xs) (y:ys) = x == y && isPrefixOf xs ys
+
+isInfixOf :: Eq a => [a] -> [a] -> Bool
+isInfixOf xs ys = any (isPrefixOf xs) (tails ys)
+
+isSuffixOf :: Eq a => [a] -> [a] -> Bool
+isSuffixOf xs ys = xs == drop (length ys - length xs) ys
 
 zip :: [a] -> [b] -> [(a,b)]
 zip [] _ = []
@@ -230,11 +248,13 @@ zipWith f (x:xs) (y:ys) = f x y : zipWith f xs ys
 -- unlines
 -- unwords
 
--- transpose
+transpose :: [[a]] -> [[a]]
+transpose [] = []
+-- ???
 
 -- checks if the letters of a phrase form a palindrome (see below for examples)
 palindrome :: String -> Bool
-palindrome = undefined
+palindrome x = x == reverse x
 
 {-
 
