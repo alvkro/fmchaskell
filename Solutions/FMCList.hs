@@ -13,7 +13,7 @@ import Prelude
 import qualified Prelude   as P
 import qualified Data.List as L
 import qualified Data.Char as C
-import FMCBabyNat (Nat(O))
+import FMCBabyNat (Nat(O), one)
 import Data.Binary.Builder (empty)
 
 {- import qualified ... as ... ?
@@ -86,7 +86,7 @@ product (x:xs) = x * product xs
 
 reverse :: [a] -> [a]
 reverse [] = []
-reverse (x:xs) = xs ++ [x]
+reverse (x:xs) = xs ++ [x] -- O Haskell interpreta head como apenas um caractere, não uma lista (safado)
 
 (++) :: [a] -> [a] -> [a]
 (++) [] ys = ys
@@ -98,7 +98,8 @@ infixr 5 ++
 
 -- (snoc is cons written backwards)
 snoc :: a -> [a] -> [a]
-snoc = undefined
+snoc x [] = [x]
+snoc y (x:xs) = (x:xs) ++ [y]
 
 (<:) :: [a] -> a -> [a]
 (<:) = flip snoc
@@ -113,18 +114,53 @@ xs +++ (y:ys) = (xs +++ [y]) +++ ys
 -- (hmm?!)
 infixl 5 +++
 
--- minimum :: Ord a => [a] -> a
--- maximum :: Ord a => [a] -> a
+minimum :: Ord a => [a] -> a
+minimum [] = error "Lista vazia!"
+minimum [x] = x
+minimum (x:xs) = min x (minimum xs)
 
--- take
--- drop
+maximum :: Ord a => [a] -> a
+maximum [] = error "Lista vazia!"
+maximum [x] = x
+maximum (x:xs) = max x (maximum xs)
 
--- takeWhile
--- dropWhile
 
--- tails
--- init
--- inits
+take :: Int -> [a] -> [a]
+take 0 (x:xs) = []
+take _ [] = []
+take n (x:xs) = x : take (n-1) xs
+
+
+drop :: Int -> [a] -> [a]
+drop 0 (x:xs) = []
+drop _ [] = []
+drop n (x:xs) = x : drop (n-1) xs
+
+takeWhile :: (a -> Bool) -> [a] -> [a]
+takeWhile _ [] = []
+takeWhile p (x:xs)
+    | p x       = x : takeWhile p xs
+    | otherwise = []                   
+
+dropWhile :: (a -> Bool) -> [a] -> [a]
+dropWhile _ [] = []
+dropWhile p (x:xs)
+    | p x       = dropWhile p xs
+    | otherwise = x:xs
+
+tails :: [a] -> [[a]]
+tails [] = [[]]
+tails (x:xs) = (x:xs) : tails xs
+--              ^^^ LISTA INTEIRA
+
+init :: [a] -> [[a]]
+init [] = [[]]
+init (x:xs) = (x:xs) : init xs
+
+
+inits :: [a] -> [[a]]
+inits [] = [[]]
+inits (x:xs) = [] : [x:ys | ys <- inits xs]
 
 -- subsequences
 
