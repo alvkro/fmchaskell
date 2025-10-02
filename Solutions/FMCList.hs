@@ -162,15 +162,27 @@ inits :: [a] -> [[a]]
 inits [] = [[]]
 inits (x:xs) = [] : [x:ys | ys <- inits xs]
 
--- subsequences
+-- subsequences (para fazer c/ map)
 
--- any
--- all
+any :: (a -> Bool) -> [a] -> Bool
+any _ [] = False
+any p (x:xs) = p x || any p xs
 
--- and
--- or
+all :: (a -> Bool) -> [a] -> Bool
+all _ [] = True
+all p (x:xs) = p x && all p xs
 
--- concat
+and :: [Bool] -> Bool
+and [] = True
+and (x:xs) = x && and xs
+
+or :: [Bool] -> Bool
+or [] = False
+or (x:xs) = x || or xs
+
+concat :: [[a]] -> [a]
+concat [] = []
+concat (xs:xss) = xs ++ concat xss
 
 -- elem using the funciton 'any' above
 
@@ -183,15 +195,26 @@ inits (x:xs) = [] : [x:ys | ys <- inits xs]
 -- map
 
 -- cycle
--- repeat
--- replicate
+repeat :: a -> [a]
+repeat x = x : repeat x
+
+replicate :: Int -> a -> [a]
+replicate 0 _ = []
+replicate n x = x : replicate (n-1) x
 
 -- isPrefixOf
 -- isInfixOf
 -- isSuffixOf
 
--- zip
--- zipWith
+zip :: [a] -> [b] -> [(a,b)]
+zip [] _ = []
+zip _ [] = []
+zip (x:xs) (y:ys) = (x,y) : zip xs ys
+
+zipWith :: (a -> b -> c) -> [a] -> [b] -> [c]
+zipWith _ [] _ = []
+zipWith _ _ [] = []
+zipWith f (x:xs) (y:ys) = f x y : zipWith f xs ys
 
 -- intercalate
 -- nub
