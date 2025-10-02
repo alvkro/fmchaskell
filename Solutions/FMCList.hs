@@ -95,7 +95,7 @@ reverse (x:xs) = xs ++ [x] -- O Haskell interpreta head como apenas um caractere
 -- (what?!)
 infixr 5 ++
 
--- (snoc is cons written backwards)
+-- (snoc is cons written backwards) [basicamente o oposto da função de um construtor :P]
 snoc :: a -> [a] -> [a]
 snoc x [] = [x]
 snoc y (x:xs) = (x:xs) ++ [y]
@@ -234,19 +234,49 @@ zipWith _ [] _ = []
 zipWith _ _ [] = []
 zipWith f (x:xs) (y:ys) = f x y : zipWith f xs ys
 
--- intercalate
--- nub
+intercalate :: [a] -> [[a]] -> [a]
+intercalate _ [] = []
+intercalate y (x:[]) = x
+intercalate y (x:xs) = x ++ y ++ intercalate y xs
 
--- splitAt
+nub :: Eq a => [a] -> [a]
+nub [] = []
+nub (x:xs) = x : nub (filter (/= x) xs)  -- remove ocorrencias de x
+
+splitAt :: Int -> [a] -> ([a], [a])
+splitAt n xs = (take n xs, drop n xs)
+
 -- what is the problem with the following?:
 -- splitAt n xs  =  (take n xs, drop n xs)
 
--- break
+-- RESPOSTA: O algoritmo percorre a lista duas vezes
+-- uma vez no take, outra no drop, é ineficiente comparado
+-- ao fazer com recursão...
 
--- lines
--- words
--- unlines
--- unwords
+break :: (a -> Bool) -> [a] -> ([a], [a])
+break _ [] = ([], [])   
+break p (x:xs)
+    | p x       = ([], x:xs) -- < Para aqui
+    | otherwise = (x:ys, zs) -- < Continua
+        where (ys, zs) = break p xs
+
+lines :: String -> [String]
+lines [] = []
+lines x = takeWhile (/= '\n') x : lines (drop 1 (dropWhile (/= '\n') x))
+
+
+words :: String -> [String]
+words [] = []
+words x = takeWhile (not . isSpace) x : words (dropWhile isSpace (dropWhile (not . isSpace) x))
+  where isSpace c = c == ' '
+
+unlines :: [String] -> [String]
+unlines [] = []
+unlines (x:xs) = [x] ++ ["\n"] ++ unlines xs
+
+unwords :: [[String]] -> [String]
+unwords [] = []
+unwords (x:xs) = x ++ [" "] ++ unwords xs
 
 transpose :: [[a]] -> [[a]]
 transpose [] = []
